@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>「一億人生」終極財務全導航</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        body {
+            background-color: #FAFAF9;
+            color: #292524;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .nav-btn.active {
+            background-color: #115E59;
+            color: white;
+            border-color: #115E59;
+        }
+        .stage-card.active {
+            border-color: #115E59;
+            background-color: #F0FDFA;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .strike-through {
+            text-decoration: line-through;
+            color: #A8A29E;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <!-- Chosen Palette: Warm Neutrals & Forest Green -->
+    <!-- Application Structure Plan: The application is structured as an interactive dashboard with a top navigation bar dividing the content into four key functional areas: 1. Executive Dashboard (high-level goals, current status, and primary growth chart), 2. Lifelong Roadmap (interactive breakdown of the 4 age stages with dynamic details), 3. Family Strategy (two-column layout contrasting parent defense vs. child growth), 4. Action SOP (interactive checklist for the immediate 33-40 age phase). This structure was chosen to transform a linear, text-heavy markdown report into an exploratory tool. Users can immediately grasp the big picture, drill down into specific life stages, understand risk management separately, and finally interact with a concrete to-do list, mirroring the logical flow of financial planning. -->
+    <!-- Visualization & Content Choices: 
+        1. Growth Trajectory (Dashboard) -> Goal: Show long-term impact -> Line Chart (Chart.js) -> Hover for exact values -> Justification: Best for showing continuous growth over time. 
+        2. ESOT Leverage (Dashboard) -> Goal: Inform about the 50% match benefit -> Bar Chart (Chart.js) -> Visual comparison -> Justification: Clearly contrasts employee vs company contribution.
+        3. Roadmap Stages (Roadmap) -> Goal: Organize & Inform -> Interactive HTML Grid -> Click card to update detail panel -> Justification: Breaks down 30+ years into digestible, selectable chunks without overwhelming the user.
+        4. Action Checklist (Action Plan) -> Goal: Change/Action -> HTML Checkboxes -> Click to cross out -> Justification: Encourages active engagement with the immediate next steps.
+        NO SVG/Mermaid used. Unicode used for iconography. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <header class="bg-[#115E59] text-white py-6 shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 lg:px-8">
+            <h1 class="text-2xl md:text-3xl font-bold tracking-tight">🎯 群聯 ESOT：「一億人生」財務全導航</h1>
+            <p class="text-teal-100 mt-2 text-sm md:text-base">專案目標：8 年達成 1,000 萬資產，32 年達成 1 億退休金，同步守護三代家庭。</p>
+        </div>
+    </header>
+
+    <nav class="bg-white border-b border-stone-200 shadow-sm">
+        <div class="container mx-auto px-4 lg:px-8 flex overflow-x-auto py-3 gap-2 hide-scrollbar">
+            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="nav-btn active px-4 py-2 rounded-full border border-stone-300 text-sm font-medium whitespace-nowrap transition-colors hover:bg-stone-100">📊 總覽與成長軌跡</button>
+            <button onclick="switchTab('roadmap')" id="btn-roadmap" class="nav-btn px-4 py-2 rounded-full border border-stone-300 text-sm font-medium whitespace-nowrap transition-colors hover:bg-stone-100">🛣️ 四階段一億藍圖</button>
+            <button onclick="switchTab('family')" id="btn-family" class="nav-btn px-4 py-2 rounded-full border border-stone-300 text-sm font-medium whitespace-nowrap transition-colors hover:bg-stone-100">🛡️ 三代家庭防禦策略</button>
+            <button onclick="switchTab('action')" id="btn-action" class="nav-btn px-4 py-2 rounded-full border border-stone-300 text-sm font-medium whitespace-nowrap transition-colors hover:bg-stone-100">✅ 33-40歲 行動 SOP</button>
+        </div>
+    </nav>
+
+    <main class="flex-grow container mx-auto px-4 lg:px-8 py-8">
+
+        <div id="dashboard" class="tab-content">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-stone-800 border-b-2 border-teal-700 pb-2 inline-block">核心現況與成長預測</h2>
+                <p class="mt-4 text-stone-600 leading-relaxed">
+                    本區塊展示您目前的財務基礎以及未來的預期成長軌跡。透過啟動群聯員工持股信託 (ESOT) 以及利用 AI 科技股的長期多頭趨勢，您的資產將在未來 30 年內呈現指數型增長。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-stone-200 border-l-4 border-l-teal-600">
+                    <p class="text-sm text-stone-500 font-medium">目前年齡</p>
+                    <p class="text-2xl font-bold text-stone-800">33 歲 <span class="text-sm font-normal text-stone-500">夫妻同年</span></p>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-stone-200 border-l-4 border-l-teal-600">
+                    <p class="text-sm text-stone-500 font-medium">目前總資產</p>
+                    <p class="text-2xl font-bold text-stone-800">333.4 萬 <span class="text-sm font-normal text-stone-500">台幣</span></p>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-stone-200 border-l-4 border-l-teal-600">
+                    <p class="text-sm text-stone-500 font-medium">備用金護城河</p>
+                    <p class="text-2xl font-bold text-stone-800">600 萬 <span class="text-sm font-normal text-stone-500">低利額度</span></p>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-stone-200 border-l-4 border-l-teal-600">
+                    <p class="text-sm text-stone-500 font-medium">房貸餘額 (8年後)</p>
+                    <p class="text-2xl font-bold text-stone-800">891 萬 <span class="text-sm font-normal text-stone-500">2.6% 利率</span></p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+                    <h3 class="text-lg font-bold text-stone-800 mb-2">📈 33歲至65歲 複利成長軌跡</h3>
+                    <p class="text-sm text-stone-500 mb-6">假設 40 歲達成 1,000 萬後，維持 10% 年化報酬率的資產推估。此圖表證明了「一億退休」在數學上的絕對可行性。</p>
+                    <div class="chart-container">
+                        <canvas id="growthChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 flex flex-col">
+                    <h3 class="text-lg font-bold text-stone-800 mb-2">💼 ESOT 提撥槓桿 (辦法 5.2)</h3>
+                    <p class="text-sm text-stone-500 mb-6">群聯信託計畫是您最強的防禦。您每提撥 6%，公司無條件補助 3%，這相當於立即獲得 50% 的無風險報酬，足以抵銷通膨與 2.6% 房貸利息。</p>
+                    <div class="chart-container flex-grow" style="height: 250px; max-height: 250px;">
+                        <canvas id="esotChart"></canvas>
+                    </div>
+                    <div class="mt-4 bg-teal-50 p-4 rounded-lg border border-teal-100">
+                        <p class="text-sm text-teal-800 font-medium">💡 顧問解析：</p>
+                        <p class="text-xs text-teal-700 mt-1">每月自提 $7,188，公司送 $3,594。一年穩增近 13 萬資產，且隨調薪自動放大。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="roadmap" class="tab-content hidden">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-stone-800 border-b-2 border-teal-700 pb-2 inline-block">四階段一億藍圖與成功率</h2>
+                <p class="mt-4 text-stone-600 leading-relaxed">
+                    將 32 年的長跑拆解為四個具體階段。點擊下方各階段卡片，即可探索該階段的核心目標、預估成功率以及理財顧問給予您的「底氣分析」。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="roadmap-cards">
+            </div>
+
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-md border border-stone-200 min-h-[300px]" id="roadmap-detail-panel">
+                <div class="flex flex-col items-center justify-center h-full text-stone-400">
+                    <span class="text-4xl mb-2">👆</span>
+                    <p>請點擊上方階段卡片以查看詳細策略與成功率分析</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="family" class="tab-content hidden">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-stone-800 border-b-2 border-teal-700 pb-2 inline-block">三代家庭責任與防禦策略</h2>
+                <p class="mt-4 text-stone-600 leading-relaxed">
+                    理財不僅是累積數字，更是為了守護家人。本區塊說明如何利用現有資源（備用金、雙薪現金流）建立護城河，確保「一億目標」不會因為突發的家庭醫療或教育開銷而中斷。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-stone-200 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-rose-100 text-rose-800 px-4 py-1 rounded-bl-xl font-bold text-sm">防禦盾牌</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-4 flex items-center">👴👵 父母照護計畫</h3>
+                    <p class="text-sm text-stone-500 mb-6">父母目前 63 歲與 69 歲。具備基本險與房產，但缺長照與癌症險。未來 10~20 年是醫療支出不確定性最高的時期。</p>
+                    
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="text-teal-600 mr-2">▪️</span>
+                            <div>
+                                <strong class="text-stone-800 block">不需急買昂貴保險</strong>
+                                <span class="text-sm text-stone-600">因目前現金流剛好打平，且高齡保費昂貴，不建議此時大幅增加保費支出。</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-teal-600 mr-2">▪️</span>
+                            <div>
+                                <strong class="text-stone-800 block">啟用「虛擬長照險」</strong>
+                                <span class="text-sm text-stone-600">您的 <strong>600 萬低利備用金</strong> 就是最佳防線。遇大筆醫療需求，優先動用 2.2%~3.6% 貸款。</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-teal-600 mr-2">▪️</span>
+                            <div>
+                                <strong class="text-stone-800 block">以債養利戰術</strong>
+                                <span class="text-sm text-stone-600">借低利貸款支付醫療，讓您的 1,000 萬本金繼續在 AI 市場賺取 10%~15% 報酬，避免被迫在股市低點變現。</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-stone-200 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-blue-100 text-blue-800 px-4 py-1 rounded-bl-xl font-bold text-sm">成長引擎</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-4 flex items-center">👶👧 子女成長與起跑基金</h3>
+                    <p class="text-sm text-stone-500 mb-6">子女目前 4 歲與 5 歲。計畫於您 65 歲退休時（子女 36-37 歲），各撥發 200 萬作為成家或創業後盾。</p>
+                    
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="text-teal-600 mr-2">▪️</span>
+                            <div>
+                                <strong class="text-stone-800 block">太太回歸職場的關鍵作用</strong>
+                                <span class="text-sm text-stone-600">3 年後小孩上國小，太太回歸全職護理（月增 3.5~4 萬）。這筆錢將全數支付未來增加的才藝費，完美守護您的獎金投資額度。</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-teal-600 mr-2">▪️</span>
+                            <div>
+                                <strong class="text-stone-800 block">公司補助養小孩</strong>
+                                <span class="text-sm text-stone-600">持股信託每 3 年期滿領回（辦法 8.1）。這筆公司額外給的紅利，可轉入子女專屬帳戶，時間複利下 400 萬目標輕鬆達成。</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-teal-600 mr-2">▪️</span>
+                            <div>
+                                <strong class="text-stone-800 block">實質淨資產轉正的自由</strong>
+                                <span class="text-sm text-stone-600">40 歲資產達 1,000 萬 > 房貸 891 萬時，您有底氣調整工作強度，給予進入青春期的孩子更多陪伴。</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="action" class="tab-content hidden">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-stone-800 border-b-2 border-teal-700 pb-2 inline-block">黃金奠基期 (33-40歲) 行動 SOP</h2>
+                <p class="mt-4 text-stone-600 leading-relaxed">
+                    未來 7 年是不確定性最低、複利槓桿最高的時期。請將此清單視為標準作業程序。您可以點擊清單項目來標記完成，感受邁向 1,000 萬目標的踏實感。
+                </p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+                <div class="bg-stone-50 border-b border-stone-200 px-6 py-4">
+                    <h3 class="font-bold text-stone-800">A. 啟動階段 (現在 ~ 第 12 個月)</h3>
+                </div>
+                <div class="p-6 space-y-3">
+                    <label class="flex items-start cursor-pointer group">
+                        <input type="checkbox" class="action-checkbox mt-1 mr-3 w-5 h-5 text-teal-600 rounded border-stone-300 focus:ring-teal-500">
+                        <span class="text-stone-700 group-hover:text-stone-900 transition-colors">
+                            <strong>立即登入信託系統：</strong> 設定 <strong>6% 提撥</strong>（每月扣 $7,188），確保公司 50% 獎勵金啟動。
+                        </span>
+                    </label>
+                    <label class="flex items-start cursor-pointer group">
+                        <input type="checkbox" class="action-checkbox mt-1 mr-3 w-5 h-5 text-teal-600 rounded border-stone-300 focus:ring-teal-500">
+                        <span class="text-stone-700 group-hover:text-stone-900 transition-colors">
+                            <strong>盤點存量資產：</strong> 檢視目前 333 萬。若群聯佔比過半，未來獎金應 100% 轉向 VOO 以平衡風險。
+                        </span>
+                    </label>
+                    <label class="flex items-start cursor-pointer group">
+                        <input type="checkbox" class="action-checkbox mt-1 mr-3 w-5 h-5 text-teal-600 rounded border-stone-300 focus:ring-teal-500">
+                        <span class="text-stone-700 group-hover:text-stone-900 transition-colors">
+                            <strong>確認備用金狀態：</strong> 確認 600 萬理財房貸+信貸額度有效，設定為不賣股票的「最後防線」。
+                        </span>
+                    </label>
+                </div>
+
+                <div class="bg-stone-50 border-y border-stone-200 px-6 py-4">
+                    <h3 class="font-bold text-stone-800">B. 成長與轉換階段 (第 13 ~ 36 個月)</h3>
+                </div>
+                <div class="p-6 space-y-3">
+                    <label class="flex items-start cursor-pointer group">
+                        <input type="checkbox" class="action-checkbox mt-1 mr-3 w-5 h-5 text-teal-600 rounded border-stone-300 focus:ring-teal-500">
+                        <span class="text-stone-700 group-hover:text-stone-900 transition-colors">
+                            <strong>獎金自動化投資：</strong> 每年 2 月預留 30 萬至元大複委託，設定每月 $25,000 定期定額 VOO。
+                        </span>
+                    </label>
+                    <label class="flex items-start cursor-pointer group">
+                        <input type="checkbox" class="action-checkbox mt-1 mr-3 w-5 h-5 text-teal-600 rounded border-stone-300 focus:ring-teal-500">
+                        <span class="text-stone-700 group-hover:text-stone-900 transition-colors">
+                            <strong>建立父母醫療專項：</strong> 每年額外撥 5~10 萬獎金存入高利活存，專供父母小額急用，減輕心理壓力。
+                        </span>
+                    </label>
+                    <label class="flex items-start cursor-pointer group">
+                        <input type="checkbox" class="action-checkbox mt-1 mr-3 w-5 h-5 text-teal-600 rounded border-stone-300 focus:ring-teal-500">
+                        <span class="text-stone-700 group-hover:text-stone-900 transition-colors">
+                            <strong>太太職涯轉銜落實：</strong> 計畫第 3 年，確認太太重返全職，收入專用於小孩教育，保護主投資線。
+                        </span>
+                    </label>
+                </div>
+
+                <div class="bg-stone-50 border-y border-stone-200 px-6 py-4">
+                    <h3 class="font-bold text-stone-800">C. 結算與校準階段 (第 37 ~ 60 個月)</h3>
+                </div>
+                <div class="p-6 space-y-3">
+                    <label class="flex items-start cursor-pointer group">
+                        <input type="checkbox" class="action-checkbox mt-1 mr-3 w-5 h-5 text-teal-600 rounded border-stone-300 focus:ring-teal-500">
+                        <span class="text-stone-700 group-hover:text-stone-900 transition-colors">
+                            <strong>信託第一期滿處理：</strong> 經歷 36 個月，若群聯過熱，領回「公司補助部分」轉入 VOO 再平衡。
+                        </span>
+                    </label>
+                    <label class="flex items-start cursor-pointer group">
+                        <input type="checkbox" class="action-checkbox mt-1 mr-3 w-5 h-5 text-teal-600 rounded border-stone-300 focus:ring-teal-500">
+                        <span class="text-stone-700 group-hover:text-stone-900 transition-colors">
+                            <strong>檢視 650 萬中繼點：</strong> 確認總資產達標進度。若落後，檢視個股並考慮加大美股大盤比例。
+                        </span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-stone-800 text-stone-400 py-6 text-center text-sm">
+        <div class="container mx-auto px-4">
+            <p>群聯 ESOT 理財顧問分析系統 © 2026. Data based on 113.05.10 辦法 V2.</p>
+        </div>
+    </footer>
+
+    <script>
+        const roadmapData = [
+            {
+                id: 'stage1',
+                title: '黃金奠基期',
+                age: '33 ~ 40 歲',
+                goal: '1,000 萬',
+                successRate: 95,
+                color: 'border-emerald-500',
+                bgColor: 'bg-emerald-50',
+                desc: '此階段強調「絕對執行力」，將所有自動化系統建立完成。',
+                confidence: '你的底薪穩定，ESOT 直接送 50% 獎勵金，這是確定紅利。只要勾選 6% 提撥，資產在發薪前就存好。目前 333 萬已完成 1/3，只要不中斷，達標機率極高。'
+            },
+            {
+                id: 'stage2',
+                title: '壓力回報期',
+                age: '40 ~ 50 歲',
+                goal: '2,600 萬',
+                successRate: 85,
+                color: 'border-blue-500',
+                bgColor: 'bg-blue-50',
+                desc: '守住 1,000 萬本金不被生活突發狀況（如父母醫療）稀釋。',
+                confidence: '此時資產增值速度已超過你的年度儲蓄。面對父母醫療變數，你有 600 萬額度防線，不需要在股市低點被迫賣股票。太太重返職場能抵禦短期現金流壓力。'
+            },
+            {
+                id: 'stage3',
+                title: '資產噴發期',
+                age: '50 ~ 60 歲',
+                goal: '6,700 萬',
+                successRate: 80,
+                color: 'border-indigo-500',
+                bgColor: 'bg-indigo-50',
+                desc: '降低單一產業比重，轉向 VOO 為主的全球平衡配置。',
+                confidence: '你已在市場超過 20 年，長期的持股信心會讓你無視短期波動。房貸已近尾聲，小孩已獨立，你只需要穩定將獲利轉向 VOO 即可穩操勝算。'
+            },
+            {
+                id: 'stage4',
+                title: '一億圓夢期',
+                age: '60 ~ 65 歲',
+                goal: '1 億',
+                successRate: 90,
+                color: 'border-purple-500',
+                bgColor: 'bg-purple-50',
+                desc: '將資產轉為現金流標的，結清所有房貸，攜手退休。',
+                confidence: '到此階段，你的資產規模已大到「只要大盤不崩盤，目標就達成」。房貸結清，持股信託 32 年累積的福利讓你無後顧之憂。'
+            }
+        ];
+
+        let growthChartInstance = null;
+        let esotChartInstance = null;
+
+        function initCharts() {
+            if (growthChartInstance) growthChartInstance.destroy();
+            const ctxGrowth = document.getElementById('growthChart');
+            if(ctxGrowth) {
+                growthChartInstance = new Chart(ctxGrowth.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: ['33歲 (現在)', '40歲', '50歲', '60歲', '65歲'],
+                        datasets: [{
+                            label: '預期總資產 (萬台幣)',
+                            data: [333.4, 1000, 2600, 6700, 10000],
+                            borderColor: '#0F766E',
+                            backgroundColor: 'rgba(15, 118, 110, 0.15)',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#0F766E',
+                            pointBorderWidth: 2,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            fill: true,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.parsed.y + ' 萬';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: '#E7E5E4' },
+                                ticks: {
+                                    callback: function(value) {
+                                        return value >= 1000 ? (value/1000) + 'k' : value;
+                                    }
+                                }
+                            },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+
+            if (esotChartInstance) esotChartInstance.destroy();
+            const ctxEsot = document.getElementById('esotChart');
+            if(ctxEsot) {
+                esotChartInstance = new Chart(ctxEsot.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['每月投入結構'],
+                        datasets: [
+                            {
+                                label: '自提 6% ($7,188)',
+                                data: [7188],
+                                backgroundColor: '#14B8A6'
+                            },
+                            {
+                                label: '公司補助 3% ($3,594)',
+                                data: [3594],
+                                backgroundColor: '#F59E0B'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        scales: {
+                            x: { stacked: true, display: false },
+                            y: { stacked: true, display: false }
+                        },
+                        plugins: {
+                            legend: { position: 'bottom', labels: { boxWidth: 12 } },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById('btn-' + tabId).classList.add('active');
+
+            if (tabId === 'dashboard') {
+                setTimeout(initCharts, 50); 
+            }
+        }
+
+        function renderRoadmapCards() {
+            const container = document.getElementById('roadmap-cards');
+            container.innerHTML = '';
+            
+            roadmapData.forEach((data, index) => {
+                const card = document.createElement('div');
+                card.className = `stage-card bg-white p-5 rounded-xl border-2 border-stone-200 cursor-pointer transition-all hover:border-teal-600 hover:shadow-md`;
+                card.onclick = () => selectStage(index, card);
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs font-bold px-2 py-1 rounded bg-stone-100 text-stone-600">${data.age}</span>
+                        <span class="text-sm font-bold text-teal-700">目標: ${data.goal}</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-stone-800 mb-2">${data.title}</h3>
+                    <div class="w-full bg-stone-200 rounded-full h-2 mt-4">
+                        <div class="bg-teal-600 h-2 rounded-full" style="width: ${data.successRate}%"></div>
+                    </div>
+                    <p class="text-xs text-right mt-1 text-stone-500">成功率 ${data.successRate}%</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectStage(index, cardElement) {
+            document.querySelectorAll('.stage-card').forEach(c => c.classList.remove('active', 'border-teal-600'));
+            cardElement.classList.add('active');
+
+            const data = roadmapData[index];
+            const panel = document.getElementById('roadmap-detail-panel');
+            
+            panel.innerHTML = `
+                <div class="animate-fade-in">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-stone-200 pb-4 mb-4">
+                        <div>
+                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold ${data.bgColor} text-stone-700 mb-2">${data.age}</span>
+                            <h3 class="text-2xl font-bold text-stone-800">${data.title}</h3>
+                        </div>
+                        <div class="mt-4 md:mt-0 text-center md:text-right">
+                            <p class="text-sm text-stone-500">階段資產目標</p>
+                            <p class="text-3xl font-black text-teal-700">${data.goal}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-bold text-stone-700 mb-2 flex items-center">🎯 核心任務</h4>
+                            <p class="text-stone-600 leading-relaxed">${data.desc}</p>
+                            
+                            <div class="mt-6">
+                                <h4 class="font-bold text-stone-700 mb-2 flex items-center">📊 達成機率評估</h4>
+                                <div class="flex items-center">
+                                    <div class="text-4xl font-black text-stone-800 mr-4">${data.successRate}%</div>
+                                    <div class="flex-grow bg-stone-100 rounded-full h-4 overflow-hidden border border-stone-200">
+                                        <div class="bg-gradient-to-r from-teal-400 to-teal-600 h-full rounded-full transition-all duration-1000" style="width: 0%" id="animated-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-stone-50 p-5 rounded-lg border border-stone-200">
+                            <h4 class="font-bold text-teal-800 mb-2 flex items-center">💡 顧問底氣分析</h4>
+                            <p class="text-stone-700 text-sm leading-relaxed">${data.confidence}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            setTimeout(() => {
+                const bar = document.getElementById('animated-bar');
+                if(bar) bar.style.width = data.successRate + '%';
+            }, 50);
+        }
+
+        function initCheckboxes() {
+            document.querySelectorAll('.action-checkbox').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const textSpan = this.nextElementSibling;
+                    if (this.checked) {
+                        textSpan.classList.add('strike-through');
+                    } else {
+                        textSpan.classList.remove('strike-through');
+                    }
+                });
+            });
+        }
+
+        window.onload = () => {
+            initCharts();
+            renderRoadmapCards();
+            initCheckboxes();
+        };
+    </script>
+</body>
+</html>
